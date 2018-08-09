@@ -2,15 +2,13 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 var http = require('http');
+var base64url = require('base64url')
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 const TOKEN_PATH = 'token.json';
 
-http.createServer(function(req, res){
-  res.write('Hello World');
-  res.end();
-}).listen(3000);
+
 
 // Load client secrets from a local file.
 fs.readFile('credentials.json', (err, content) => {
@@ -118,16 +116,19 @@ function findMessages(auth) {
 
 
 
-    for(let i=0; i<10; i++) {
+    for(let i=0; i<1; i++) {
       var gmail = google.gmail('v1');
 
       gmail.users.messages.get({
         auth: auth,
         userId: 'me',
-        id: response.data.messages[i].id
+        id: response.data.messages[i].id,
+        format: 'raw'
       }, function(err, response) {
           console.log("====================================")
-          console.log(response);
+
+          // console.log(base64url.decode(response.data.raw));
+          console.log(base64url.decode(response.data.raw));
       });
     }
   });
